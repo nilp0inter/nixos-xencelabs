@@ -4,7 +4,9 @@
   outputs = { self, nixpkgs }: let
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
   in {
-    nixosModules.xencelabs = ./nixos.nix;
+    nixosModules.xencelabs = import ./nixos.nix self.packages.x86_64-linux.xencelabs;
+
+    homeModules.xencelabs = import ./home.nix self.packages.x86_64-linux.xencelabs;
 
     packages.x86_64-linux.xencelabs = pkgs.libsForQt5.callPackage ./xencelabs.nix {};
 
