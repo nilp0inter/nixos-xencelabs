@@ -7,7 +7,6 @@ with lib; {
   options = {
     programs.xencelabs = {
       enable = mkEnableOption "XenceLabs";
-      autostart = mkEnableOption "Autostart xencelabs via xdg autostart";
     };
   };
   config = mkIf cfg.enable {
