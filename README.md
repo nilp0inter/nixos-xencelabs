@@ -1,2 +1,9 @@
 # nixos-xencelabs
-Unofficial NixOS &amp; Home Manager modules for Xencelabs
+
+This flake allows you to use XenceLabs Linux Driver with NixOS.
+
+Use as an input for your flake and import the module into your NixOS system configuration. Then you can set the option:
+
+```
+services.xencelabs.enable = true;
+```
