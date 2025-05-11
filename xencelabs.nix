@@ -1,20 +1,20 @@
-{ stdenv, fetchzip, wrapQtAppsHook, lib, libusb, xorg, libsForQt5, libglvnd, glibc, qtbase, ... }:
+{ pkgs, fetchzip, ... }:
 let
   driversZipFile = fetchzip {
-    url = "https://www.xencelabs.com/support/file/id/11/type/1";
+    url = "https://www.xencelabs.com/support/file/id/61/type/1";
     extension = "zip";
-    sha256 = "sha256-lHlE0ZRRJ0A7caPJOeapqnNqJV4h8Tl5JkmHuMYcS8Q=";
+    sha256 = "sha256-FSxR7SekHqvvRXkNMcSpGumw8TTnRWGPP/N/rya1VOk=";
     stripRoot = true;
   };
 in
 
-stdenv.mkDerivation rec {
+pkgs.stdenv.mkDerivation rec {
   name = "xencelabs";
-  version = "1.2.1-11";
-  src = "${driversZipFile}/${name}-${version}.x86_64.tar.gz";
+  version = "1.3.4-26";
+  src = "${driversZipFile}/${name}-${version}.tar.gz";
 
-  buildInputs = [ qtbase ];
-  nativeBuildInputs = [ wrapQtAppsHook ];
+  buildInputs = [ pkgs.libsForQt5.qt5.qtbase ];
+  nativeBuildInputs = [ pkgs.libsForQt5.qt5.wrapQtAppsHook ];
 
   installPhase = ''
     # Copy udev rule
@@ -37,8 +37,8 @@ stdenv.mkDerivation rec {
   '';
   preFixup = let
     # we prepare our library path in the let clause to avoid it become part of the input of mkDerivation
-    libPath = lib.makeLibraryPath [
-      libusb                       # libusb-1.0.so.0
+    libPath = pkgs.lib.makeLibraryPath (with pkgs; [
+      xorg.libXrandr               # libXrandr.so.2
       xorg.libX11                  # libX11.so.6
       xorg.libXtst                 # libXtst.so.6
       libsForQt5.qt5.qtx11extras   # libQt5X11Extras.so.5
@@ -46,7 +46,8 @@ stdenv.mkDerivation rec {
       libsForQt5.qt5.qtbase        # libQt5Widgets.so.5 libQt5Gui.so.5 libQt5Xml.so.5 libQt5Network.so.5 libQt5Core.so.5
       libglvnd                     # libGL.so.1
       stdenv.cc.cc.lib             # libstdc++.so.6
-    ];
+      libusb1                      # libusb-1.0.so.0
+    ]);
   in ''
     patchelf \
       --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
