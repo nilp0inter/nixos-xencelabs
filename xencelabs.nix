@@ -1,17 +1,17 @@
 { pkgs, fetchzip, ... }:
 let
   driversZipFile = fetchzip {
-    url = "https://www.xencelabs.com/support/file/id/61/type/1";
+    url = "https://www.xencelabs.com/support/file/id/11/type/1";
     extension = "zip";
-    sha256 = "sha256-FSxR7SekHqvvRXkNMcSpGumw8TTnRWGPP/N/rya1VOk=";
+    sha256 = "sha256-lHlE0ZRRJ0A7caPJOeapqnNqJV4h8Tl5JkmHuMYcS8Q=";
     stripRoot = true;
   };
 in
 
 pkgs.stdenv.mkDerivation rec {
   name = "xencelabs";
-  version = "1.3.4-26";
-  src = "${driversZipFile}/${name}-${version}.tar.gz";
+  version = "1.2.1-11";
+  src = "${driversZipFile}/${name}-${version}.x86_64.tar.gz";
 
   buildInputs = [ pkgs.libsForQt5.qt5.qtbase ];
   nativeBuildInputs = [ pkgs.libsForQt5.qt5.wrapQtAppsHook ];
@@ -57,7 +57,10 @@ pkgs.stdenv.mkDerivation rec {
     # fix the path in the desktop file
     substituteInPlace \
       $out/share/applications/xencelabs.desktop \
-      --replace /usr/lib/xencelabs/xencelabs.sh $out/bin/xencelabs \
       --replace /usr/share/icons $out/usr/share/icons
+
+    substituteInPlace \
+      $out/share/applications/xencelabs.desktop \
+      --replace "/usr/lib/xencelabs/xencelabs.sh" $out/bin/xencelabs \
   '';
 }
